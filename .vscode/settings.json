@@ -1,0 +1,11 @@
+{
+    "cmake.configureEnvironment": {
+        "PKG_CONFIG_PATH": "~/Installs/spack/var/spack/environments/geo-parallel/.spack-env/view/lib/pkgconfig"
+    },
+    "fortran.fortls.directories": [
+        "~/Installs/spack/var/spack/environments/geo-parallel/.spack-env/view/include"
+    ],
+    "C_Cpp.default.includePath": [
+        "~/Installs/spack/var/spack/environments/geo-parallel/.spack-env/view/include"
+    ]
+}
