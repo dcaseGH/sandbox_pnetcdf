@@ -1,4 +1,3 @@
-
 #ifndef ZERO_MATRIX_HPP
 #define ZERO_MATRIX_HPP
 
@@ -36,7 +35,6 @@ struct ZeroMatrix {
         std::fill(data.begin(), data.end(), 0.0);
     }
 
-    //destructor
     ~ZeroMatrix() = default;
 };
 
