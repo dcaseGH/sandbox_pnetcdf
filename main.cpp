@@ -10,7 +10,10 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         std::cout << "NetCDF Version: " << nc_inq_libvers() << std::endl;
     }
+
+    // Create matrix of zeros
     
+
     MPI_Finalize();
     return 0;
 }

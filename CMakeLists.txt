@@ -23,3 +23,10 @@ target_link_libraries(mpi_netcdf_fortran PRIVATE
     MPI::MPI_Fortran 
     PkgConfig::NETCDFF
 )
+
+# Enable tests and add a small unit test for ZeroMatrix
+enable_testing()
+
+add_executable(test_zero_matrix test/test_zero_matrix.cpp)
+target_include_directories(test_zero_matrix PRIVATE ${CMAKE_SOURCE_DIR})
+add_test(NAME zero_matrix_test COMMAND test_zero_matrix)
