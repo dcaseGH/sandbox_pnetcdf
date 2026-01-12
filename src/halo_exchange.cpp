@@ -13,7 +13,7 @@
 
 void halo_exchange(double *data, std::size_t rows, std::size_t cols, MPI_Comm comm) {
     if (!data || rows == 0 || cols == 0) return;
-
+    // debug this - it wont work due to deadlock
     int rank = 0, size = 1;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
@@ -31,14 +31,19 @@ void halo_exchange(double *data, std::size_t rows, std::size_t cols, MPI_Comm co
     }
 
     // Exchange with previous rank: send our top row, receive prev's bottom row
-    MPI_Sendrecv(send_top.data(), static_cast<int>(cols), MPI_DOUBLE, prev, 0,
-                 recv_top.data(), static_cast<int>(cols), MPI_DOUBLE, prev, 0,
-                 comm, MPI_STATUS_IGNORE);
+    if (prev != MPI_PROC_NULL) {
+        MPI_Sendrecv(send_top.data(), static_cast<int>(cols), MPI_DOUBLE, prev, 0,
+                     recv_top.data(), static_cast<int>(cols), MPI_DOUBLE, prev, 1,
+                     comm, MPI_STATUS_IGNORE);
+    }
 
     // Exchange with next rank: send our bottom row, receive next's top row
-    MPI_Sendrecv(send_bottom.data(), static_cast<int>(cols), MPI_DOUBLE, next, 1,
-                 recv_bottom.data(), static_cast<int>(cols), MPI_DOUBLE, next, 1,
-                 comm, MPI_STATUS_IGNORE);
+
+    if (next != MPI_PROC_NULL) {
+        MPI_Sendrecv(send_bottom.data(), static_cast<int>(cols), MPI_DOUBLE, next, 1,
+                     recv_bottom.data(), static_cast<int>(cols), MPI_DOUBLE, next, 0,
+                     comm, MPI_STATUS_IGNORE);
+    }
 
     // Overwrite top row with received data from prev (if any)
     if (prev != MPI_PROC_NULL) {
