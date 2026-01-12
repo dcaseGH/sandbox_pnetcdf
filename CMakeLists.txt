@@ -8,7 +8,7 @@ pkg_check_modules(NETCDF REQUIRED IMPORTED_TARGET netcdf)
 pkg_check_modules(NETCDFF REQUIRED IMPORTED_TARGET netcdf-fortran)
 
 # 2. CREATE the targets (Executables) first
-add_executable(mpi_netcdf_cpp src/main.cpp src/halo_exchange.cpp src/laplace_operation.cpp)
+add_executable(mpi_netcdf_cpp src/main.cpp src/halo_exchange.cpp src/laplace_operation.cpp src/netcdf_io.cpp)
 target_include_directories(mpi_netcdf_cpp PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_executable(mpi_netcdf_fortran main.f90)
 
@@ -40,3 +40,8 @@ add_test(NAME halo_exchange_test COMMAND ${MPIEXEC_EXECUTABLE} -n 3 $<TARGET_FIL
 add_executable(test_laplace test/test_laplace.cpp src/laplace_operation.cpp)
 target_include_directories(test_laplace PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_test(NAME laplace_test COMMAND test_laplace)
+
+add_executable(test_netcdf_io test/test_netcdf_io.cpp src/netcdf_io.cpp)
+target_include_directories(test_netcdf_io PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(test_netcdf_io PRIVATE MPI::MPI_CXX PkgConfig::NETCDF)
+add_test(NAME netcdf_io_test COMMAND ${MPIEXEC_EXECUTABLE} -n 1 $<TARGET_FILE:test_netcdf_io>)

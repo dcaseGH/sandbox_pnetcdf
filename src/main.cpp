@@ -4,6 +4,7 @@
 #include "zero_matrix.hpp"
 #include "laplace_operation.hpp"
 #include "halo_exchange.hpp"
+#include "netcdf_io.hpp"
 
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
@@ -35,6 +36,16 @@ int main(int argc, char** argv) {
         //halo exchange
         halo_exchange(matrix.data.data(), matrix.rows, matrix.cols, MPI_COMM_WORLD);
     }    
+
+    //write netcdf
+    std::cout << "Writing output NetCDF files..." << std::endl;
+    
+    const std::string fname = "output_rank_" + std::to_string(rank) + ".nc";
+    int rc = write_matrix_netcdf(fname, matrix.data.data(), matrix.rows, matrix.cols, MPI_COMM_WORLD);
+    if (rc != 0) {
+        std::cerr << "Rank " << rank << ": write_matrix_netcdf failed: " << rc << std::endl;
+    }   
+    
 
     MPI_Finalize();
     return 0;
